@@ -5,8 +5,8 @@ pipeline {
         MAVEN_HOME = tool 'Maven-3.9.11'   // Ensure this tool name matches Jenkins config
         JAVA_HOME = tool 'JDK-21'          // Match your configured JDK
         PATH = "${JAVA_HOME}/bin:${MAVEN_HOME}/bin:${env.PATH}"
-        DOCKER_IMAGE = "thechief28/vault-spring-boot-simple-crud-jpa:${env.BUILD_NUMBER}"
-        DOCKER_LATEST_IMAGE = "thechief28/vault-spring-boot-simple-crud-jpa:latest"
+        DOCKER_IMAGE = "hfrnssc/vault-spring-boot-simple-crud-jpa:${env.BUILD_NUMBER}"
+        DOCKER_LATEST_IMAGE = "hfrnssc/vault-spring-boot-simple-crud-jpa:latest"
         PROJECT_DIR = "simple-crud-jpa"
         ANSIBLE_DIR = "/home/jenkins/ansible"
         ANSIBLE_CONFIG = "/home/jenkins/ansible/ansible.cfg"
@@ -15,7 +15,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/anandakevin/vault-spring-boot.git'
+                git branch: 'main', url: 'https://github.com/hildamathilda2/vault-spring-boot.git'
             }
         }
 
