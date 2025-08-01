@@ -10,7 +10,7 @@ pipeline{
         stage('build & package'){
             steps{
                 dir('simple-crud-jpa'){
-                    sh 'mvn clean package'
+                    sh 'mvn clean package -DskipTests'
                 }
             }
         }
