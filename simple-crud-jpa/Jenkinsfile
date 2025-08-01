@@ -10,6 +10,10 @@ pipeline {
         PROJECT_DIR = "simple-crud-jpa"
         ANSIBLE_DIR = "/home/jenkins/ansible"
         ANSIBLE_CONFIG = "/home/jenkins/ansible/ansible.cfg"
+        DB_HOST = 'host.docker.internal'
+            DB_PORT = '5432'
+            REDIS_PORT = '6379'
+
     }
 
     stages {
@@ -27,10 +31,17 @@ pipeline {
             }
         }
 
+        stage('Test Connectivity') {
+            steps {
+                sh 'nc -z $DB_HOST $DB_PORT || echo "Postgres unreachable!"'
+                sh 'nc -z $DB_HOST $REDIS_PORT || echo "Redis unreachable!"'
+             }
+        }
+
         stage('Package') {
             steps {
                 dir("${PROJECT_DIR}") {
-                    sh 'mvn package -DskipTests'
+                    sh 'mvn package'
                 }
             }
             post {
