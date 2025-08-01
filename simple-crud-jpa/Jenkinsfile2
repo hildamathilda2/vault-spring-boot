@@ -1,0 +1,49 @@
+pipeline{
+    agent any
+
+    stages{
+        stage('Checkout'){
+            steps{
+                    git branch: 'main', url: 'https://github.com/hildamathilda2/vault-spring-boot.git'
+            }
+        }
+        stage('build & package'){
+            steps{
+                dir('simple-crud-jpa'){
+                    sh 'mvn clean package -DskipTests'
+                }
+            }
+        }
+        stage('build docker image'){
+            steps{
+                dir('simple-crud-jpa'){
+                    sh 'docker build -t hfrnssc/vault-spring-boot-simple-crud-jpa:latest .'
+                }
+            }
+        }
+        stage('push docker image'){
+            steps{
+                sh '''
+                docker push hfrnssc/vault-spring-boot-simple-crud-jpa:latest
+                docker logout
+                '''
+            }
+        }
+         stage('deploy via ansible'){
+            steps{
+                echo 'deploying application on target server via ansible...'
+                sh '''
+                ansible-playbook -i /home/jenkins/ansible/inventories/inventory.ini /home/jenkins/ansible/playbooks/deploy-simple-crud-jpa.yml --extra-vars "image=hfrnssc/vault-spring-boot-simple-crud-jpa:latest"
+                '''
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Deployment successful ✅'
+        }
+        failure {
+            echo 'Deployment failed, please check the logs ❌'
+        }
+    }
+}
